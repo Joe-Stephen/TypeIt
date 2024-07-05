@@ -1,6 +1,7 @@
 const typeContainer = $(".typeContainer");
 const totalErrorsSpan = $("#totalErrors");
 const wpmSpan = $("#wpm");
+const accuracySpan = $("#accuracy");
 let typeStartTime;
 let typeEndTime;
 let wpm = 0;
@@ -14,7 +15,7 @@ const typeArea = $("#typeArea");
 
 //sample paragraph
 const sample =
-  "In Earth's future, a global crop blight and second Dust Bowl are slowly rendering the planet uninhabitable. Professor Brand (Michael Caine), a brilliant NASA physicist, is working on plans to save mankind by transporting Earth's population to a new home via a wormhole. But first, Brand must send former NASA pilot Cooper (Matthew McConaughey) and a team of researchers through the wormhole and across the galaxy to find out which of three planets could be mankind's new home.";
+  "Storytelling is the social and cultural activity of sharing stories, sometimes with improvisation, theatrics or embellishment. Every culture has its own stories or narratives, which are shared as a means of entertainment, education, cultural preservation or instilling moral values.";
 
 //splitting sample paragraph
 const sampleSplitted = sample.split("");
@@ -38,16 +39,20 @@ window.addEventListener("keydown", (e) => {
       }
     }
     typeArea.html(textNow.slice(0, textNow.length - 1).join(""));
+    userInput = userInput.slice(0, userInput.length);
     keyCount--;
   } else if (e.key.length === 1 && e.key.search(pattern) === 0) {
     if (e.key !== "Shift" && e.key !== "CapsLock") {
+      if (started) {
+        calculateAccuracy();
+      }
       if (!started) {
         typeStartTime = new Date().getTime();
         started = true;
       }
+      userInput.push(e.key);
       keyCount++;
       //calling verify function to check
-      userInput.push(e.key);
       const result = verifyKey(e.key);
       let character = "";
       result
@@ -62,17 +67,17 @@ window.addEventListener("keydown", (e) => {
 const verifyKey = (pressedKey) => {
   if (sampleSplitted[keyCount - 1] !== pressedKey) {
     totalErrors++;
-    if (userInput.length % 5 === 0) {
-      typeEndTime = new Date().getTime();
-      calculateWPM();
-    }
+    // if (userInput.length % 5 === 0) {
+    typeEndTime = new Date().getTime();
+    calculateWPM();
+    // }
     totalErrorsSpan.text(totalErrors);
     return false;
   }
-  if (userInput.length % 5 === 0) {
-    typeEndTime = new Date().getTime();
-    calculateWPM();
-  }
+  // if (userInput.length % 5 === 0) {
+  typeEndTime = new Date().getTime();
+  calculateWPM();
+  // }
   totalCorrect++;
   return true;
 };
@@ -94,4 +99,10 @@ const chageColour = (result) => {
   result
     ? typeContainer.css("color", "green")
     : typeContainer.css("color", "red");
+};
+
+//function to calculate the accuracy of the test
+const calculateAccuracy = () => {
+  const accuracy = Math.ceil((totalCorrect / userInput.length) * 100);
+  accuracySpan.text(accuracy);
 };
