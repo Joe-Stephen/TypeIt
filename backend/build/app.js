@@ -7,6 +7,7 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const helmet_1 = __importDefault(require("helmet"));
 const morgan_1 = __importDefault(require("morgan"));
+const router_1 = __importDefault(require("./router"));
 //setting up express app
 const app = (0, express_1.default)();
 const port = 3000 || process.env.port;
@@ -22,4 +23,6 @@ app.listen(port, () => {
 app.get("/ping", (req, res) => {
     return res.send("pong");
 });
+//assigning routes
+app.use("/", router_1.default);
 exports.default = app;
