@@ -7,7 +7,7 @@ import router from "./router";
 
 //setting up express app
 const app = express();
-const port = 3000 || process.env.port;
+const port = 3001;
 
 //express configuration
 app.use(cors()); //enabling cors
